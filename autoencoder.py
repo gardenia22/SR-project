@@ -6,7 +6,10 @@ import time
 import mfcc
 
 
-train_input = np.load("audio_inputs.npy")
+inputs = np.load("audio_inputs.npy")
+test_size_ratio = 0.1
+train_input = inputs[:int(inputs.shape[0] * (1-test_size_ratio))]
+test_input = inputs[int(inputs.shape[0] * (1-test_size_ratio)):]
 
 #Read input data
 X = train_input.reshape(train_input.shape[0], -1)
@@ -20,18 +23,18 @@ X_test = np.float32(X_test)
 
 # Training Parameters
 learning_rate = 0.01
-num_steps = 50
-batch_size = 2
+num_steps = 3000
+batch_size = 256
 
-display_step = 5
-test_step_interval = 1
+display_step = 10
+test_step_interval = 50
 
 # Network Parameters
 input_dimension = int(X.shape[1])
-hidden_1_dimension = int(input_dimension*0.7) 
-hidden_2_dimension = int(input_dimension*0.4) 
-
-
+#hidden_1_dimension = int(input_dimension*0.7)
+#hidden_2_dimension = int(input_dimension*0.4)
+hidden_1_dimension = 256
+hidden_2_dimension = 128
 
 
 # tf Graph input (only pictures)
@@ -65,7 +68,7 @@ def decoder(x):
 
 
 # Construct model
-encoder_op = encoder(X)
+encoder_op = encoder(encode_input)
 decoder_op = decoder(encoder_op)
 
 # Prediction
@@ -83,13 +86,13 @@ init = tf.global_variables_initializer()
 
 # Start Training
 # Start a new TF session
-train_acc_list = []
-test_acc_list = []
+train_loss_list = []
+test_loss_list = []
 best_pred = []
-best_acc_step = 0
-best_acc = 0
-test_acc = 0
-train_acc = 0
+best_loss_step = 0
+best_loss = 0
+test_loss = 0
+train_loss = 0
 output_file_name = "auto_encoder_result.txt"
 
 with tf.Session() as sess:
@@ -106,36 +109,44 @@ with tf.Session() as sess:
         _, l = sess.run([optimizer, loss], feed_dict={encode_input: X, y_true: X})
 
         X_pred = sess.run(decoder_op, feed_dict={encode_input: X, y_true:X})
-        train_acc = np.mean(X_pred == X)
+        train_loss = l
 
 
         if i % display_step == 0 or i == 1:
-            print('Step %i: Minibatch Loss: %f, Training ACC: %f' % (i, l, train_acc))
+            print('Step %i: Minibatch Loss: %f' % (i, train_loss))
 
-        train_acc_list.append(train_acc)
+        train_loss_list.append((i,train_loss))
 
-        if i % test_step_interval == 0:
-            X_pred_test = sess.run(decoder_op, feed_dict={encode_input: X_test, y_true:X_test})
-            test_acc = np.mean(X_pred_test == X_test)  
-            test_acc_list.append(test_acc)
+        if i % test_step_interval == 0 or i==num_steps:
+            X_pred_test = sess.run(decoder_op, feed_dict={encode_input: X_test})
+            X_encoder = sess.run(encoder_op, feed_dict={encode_input: X_test})
+            test_loss = sess.run(loss, feed_dict={encode_input: X_test, y_true:X_test})
+            test_loss_list.append((i,test_loss))
 
+            print('Test Loss: %f' % (test_loss))
+            if test_loss >= best_loss:
+                best_loss = test_loss
+                best_loss_step = i
+                best_pred = X_pred_test
 
-        if test_acc >= best_acc:
-            best_acc = test_acc
-            best_acc_step = i
-            best_pred = X_pred_test
+    with open("train_loss.csv", "w") as train_loss:
+        train_loss.write("iteration,loss\n")
+        for iter, loss in train_loss_list:
+            train_loss.write("%d,%f\n" % (iter, loss))
+    with open("test_loss.csv", "w") as test_loss:
+        test_loss.write("iteration,loss\n")
+        for iter, loss in test_loss_list:
+            test_loss.write("%d,%f\n" % (iter, loss))
 
-            
-    
     with open(output_file_name, "w") as outfile:
         outfile.write("best predicted output\n")
         for line in best_pred:
             for data in line:
                 outfile.write(str(data)+" ")            
             outfile.write("\n")
-        outfile.write("\ntesting accuracy: " + str(test_acc))
-        outfile.write("\ntraining accuracy: " + str(train_acc))
-        outfile.write("\nstep to achieve best accuracy: "+ str(best_acc_step))
+        outfile.write("\ntesting loss: " + str(test_loss))
+        outfile.write("\ntraining loss: " + str(train_loss))
+        outfile.write("\nstep to achieve best loss: "+ str(best_loss_step))
         outfile.write("\ntraining time: " + str(time.time() - sess_start_time))
 
 
