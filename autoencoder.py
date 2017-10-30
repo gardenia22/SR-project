@@ -90,7 +90,7 @@ train_loss_list = []
 test_loss_list = []
 best_pred = []
 best_loss_step = 0
-best_loss = 0
+best_loss = float("inf")
 test_loss = 0
 train_loss = 0
 output_file_name = "auto_encoder_result.txt"
@@ -124,19 +124,19 @@ with tf.Session() as sess:
             test_loss_list.append((i,test_loss))
 
             print('Test Loss: %f' % (test_loss))
-            if test_loss >= best_loss:
+            if test_loss <= best_loss:
                 best_loss = test_loss
                 best_loss_step = i
                 best_pred = X_pred_test
 
-    with open("train_loss.csv", "w") as train_loss:
-        train_loss.write("iteration,loss\n")
+    with open("train_loss.csv", "w") as f:
+        f.write("iteration,loss\n")
         for iter, loss in train_loss_list:
-            train_loss.write("%d,%f\n" % (iter, loss))
-    with open("test_loss.csv", "w") as test_loss:
-        test_loss.write("iteration,loss\n")
+            f.write("%d,%f\n" % (iter, loss))
+    with open("test_loss.csv", "w") as f:
+        f.write("iteration,loss\n")
         for iter, loss in test_loss_list:
-            test_loss.write("%d,%f\n" % (iter, loss))
+            f.write("%d,%f\n" % (iter, loss))
 
     with open(output_file_name, "w") as outfile:
         outfile.write("best predicted output\n")
