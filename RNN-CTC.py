@@ -7,12 +7,12 @@ from utils import *
 import pickle
 
 
-MODEL_PATH = "./model/"
+MODEL_PATH = "./RNN_model/"
 MODEL_NAME = MODEL_PATH + "model"
-RESULT_PATH = "./result_RNN/"
+# RESULT_PATH = "./RNN_result/"
 
 # Data directories. TODO
-DATA_DIR = "./data_test/"
+DATA_DIR = "./data/"
 
 # Constants.
 SPACE_TOKEN = '<space>'
@@ -24,13 +24,13 @@ FIRST_INDEX = ord('a') - 1  # 0 is reserved to space
 NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 
 # Hyper-parameters.
-NUM_EPOCHS = 500
+NUM_EPOCHS = 2000
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
 BATCH_SIZE = 1
 
 # Optimizer parameters.
-INITIAL_LEARNING_RATE = 2e-3
+INITIAL_LEARNING_RATE = 1e-3
 MOMENTUM = 0.9
 
 TEST_SIZE_RATIO = 0.1
@@ -47,39 +47,41 @@ def main(argv):
         # inputs shape [num_samples, max_length, num_features]
         # sequence_length shape [num_samples,]
         inputs = np.load(DATA_DIR + "mfcc/inputs.npy")
-
-        train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
-        train_inputs = np.float32(train_inputs) 
-        train_sequence_lengths = get_sequence_length(train_inputs)
-
-        test_inputs = inputs[int(inputs.shape[0] * (1-TEST_SIZE_RATIO)):] 
-        test_inputs = np.float32(test_inputs) 
-        test_sequence_lengths = get_sequence_length(test_inputs)
-
-        # read texts 
-        # texts = np.load(DATA_DIR + "align_text")
-        texts = read_text_file(DATA_DIR + "align_text")
-
-        train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
-        test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
-
-
-        # read labels
-        labels = texts_encoder(texts, first_index=FIRST_INDEX,
-                                      space_index=SPACE_INDEX,
-                                      space_token=SPACE_TOKEN)
-
-        train_labels = labels[:int(labels.shape[0] * (1-TEST_SIZE_RATIO))]
-        test_labels = labels[int(labels.shape[0] * (1-TEST_SIZE_RATIO)):] 
-
-
-
-        NUM_FEATURES = train_inputs.shape[2] 
- 
+        RESULT_PATH = "./RNN_result/mfcc" 
     else: 
-        #TODO autoencoder inputs
-        print ("autoencoder read files")
-    
+        inputs = np.load(DATA_DIR + "autoencoder/inputs.npy")
+        inputs = inputs[:,:, np.newaxis]
+        RESULT_PATH = "./RNN_result/autoencoder/"
+
+    # Split training and testing inputs
+    train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
+    train_inputs = np.float32(train_inputs) 
+    train_sequence_lengths = get_sequence_length(train_inputs)
+
+    test_inputs = inputs[int(inputs.shape[0] * (1-TEST_SIZE_RATIO)):] 
+    test_inputs = np.float32(test_inputs) 
+    test_sequence_lengths = get_sequence_length(test_inputs)
+        
+    # read texts 
+    texts = read_text_file(DATA_DIR + "align_text")
+
+    train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
+    test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
+
+
+    # read labels
+    labels = texts_encoder(texts, first_index=FIRST_INDEX,
+                                  space_index=SPACE_INDEX,
+                                  space_token=SPACE_TOKEN)
+
+    train_labels = labels[:int(labels.shape[0] * (1-TEST_SIZE_RATIO))]
+    test_labels = labels[int(labels.shape[0] * (1-TEST_SIZE_RATIO)):] 
+
+
+
+    NUM_FEATURES = train_inputs.shape[2] 
+
+
  
 
     graph = tf.Graph()
@@ -200,7 +202,7 @@ def main(argv):
             train_cost_list.append([current_epoch, train_cost])
             train_label_error_rate_list.append([current_epoch, train_label_error_rate])
 
-            if current_epoch == 200:
+            if current_epoch % 200 == 0:
                 saver.save(session, MODEL_NAME+"_"+str(current_epoch))
                 
 
@@ -218,9 +220,9 @@ def main(argv):
             sequence = [s for s in sequence if s != -1]
             decoded_text = sequence_decoder(sequence)
 
-            seq = "Sequence {}/{}".format(i + 1, test_num)
-            org = "Original:\n{}".format(test_texts[i])
-            dec = "Decoded:\n{}".format(decoded_text)
+            seq = "Sequence {}/{}\n".format(i + 1, test_num)
+            org = "Original:\n{}\n".format(test_texts[i])
+            dec = "Decoded:\n{}\n".format(decoded_text)
             print (seq)
             print (org)
             print (dec)
@@ -228,7 +230,7 @@ def main(argv):
             result.append(seq)
             result.append(org)
             result.append(dec)
-            result.append("\n")
+            
 
         # Save model weights to disk.
         save_file = saver.save(session, MODEL_NAME+"_complete")
