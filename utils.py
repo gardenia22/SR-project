@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def get_sequence_length(train_inputs):
@@ -55,6 +56,22 @@ def sequence_decoder(sequence, first_index=(ord('a') - 1)):
     return decoded_text
 
 
+def make_char_array(text, space_token='<space>'):
+    """
+    Make text as char array. Replace spaces with space token.
+    Args:
+        text: string.
+            Given text.
+        space_token: string.
+            Text which represents space char.
+    Returns:
+        string array.
+            Split text.
+    """
+    result = np.hstack([space_token if x == ' ' else list(x) for x in text])
+    return result
+
+
 def texts_encoder(texts, first_index=(ord('a') - 1), space_index=0, space_token='<space>'):
     """
     Encode texts to numbers.
@@ -77,4 +94,16 @@ def texts_encoder(texts, first_index=(ord('a') - 1), space_index=0, space_token=
         result.append(item)
 
     return np.array(result)
+
+def read_text_file(input_file):
+    result = []
+
+    with open(input_file) as f:
+        for line in f.readlines():
+            result.append(line.strip())
+
+
+
+    return np.array(result)     
+
 
