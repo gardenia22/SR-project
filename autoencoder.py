@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import time
 import mfcc
 
-
-inputs = np.load("audio_inputs.npy")
+mode = "pred" # pred or train
+model_path = "autoencoder/model_3000.ckpt"
+inputs = np.load("data/mfcc/inputs.npy")
 test_size_ratio = 0.1
 train_input = inputs[:int(inputs.shape[0] * (1-test_size_ratio))]
 test_input = inputs[int(inputs.shape[0] * (1-test_size_ratio)):]
@@ -20,6 +21,10 @@ num_input = X.shape[0]
 #Read testing data
 X_test = test_input.reshape(test_input.shape[0], -1)
 X_test = np.float32(X_test)
+
+#Read pred data
+X_pred = inputs.reshape(inputs.shape[0], -1)
+X_pred = np.float32(X_pred)
 
 # Training Parameters
 learning_rate = 0.01
@@ -93,61 +98,69 @@ best_loss_step = 0
 best_loss = float("inf")
 test_loss = 0
 train_loss = 0
-output_file_name = "auto_encoder_result.txt"
+output_file_name = "result/auto_encoder_result.txt"
+
+saver = tf.train.Saver()
 
 with tf.Session() as sess:
+    if mode == "pred":
+        saver.restore(sess, model_path)
+        X_encoder = sess.run(encoder_op, feed_dict={encode_input: X_pred})
+        np.save("data/autoencoder/inputs.npy", X_encoder)
+    elif mode == "train":
+        # Run the initializer
+        sess.run(init)
 
-    # Run the initializer
-    sess.run(init)
+        sess_start_time = time.time()
 
-    sess_start_time = time.time()
+        # Training
+        for i in range(1, num_steps+1):
 
-    # Training
-    for i in range(1, num_steps+1):
+            # for start, end in zip(range(0, num_input, batch_size), range(batch_size, num_input, batch_size)):
+            _, l = sess.run([optimizer, loss], feed_dict={encode_input: X, y_true: X})
 
-        # for start, end in zip(range(0, num_input, batch_size), range(batch_size, num_input, batch_size)):
-        _, l = sess.run([optimizer, loss], feed_dict={encode_input: X, y_true: X})
-
-        X_pred = sess.run(decoder_op, feed_dict={encode_input: X, y_true:X})
-        train_loss = l
+            X_pred = sess.run(decoder_op, feed_dict={encode_input: X, y_true:X})
+            train_loss = l
 
 
-        if i % display_step == 0 or i == 1:
-            print('Step %i: Minibatch Loss: %f' % (i, train_loss))
+            if i % display_step == 0 or i == 1:
+                print('Step %i: Minibatch Loss: %f' % (i, train_loss))
 
-        train_loss_list.append((i,train_loss))
+            train_loss_list.append((i,train_loss))
 
-        if i % test_step_interval == 0 or i==num_steps:
-            X_pred_test = sess.run(decoder_op, feed_dict={encode_input: X_test})
-            X_encoder = sess.run(encoder_op, feed_dict={encode_input: X_test})
-            test_loss = sess.run(loss, feed_dict={encode_input: X_test, y_true:X_test})
-            test_loss_list.append((i,test_loss))
+            if i % test_step_interval == 0 or i==num_steps:
+                X_pred_test = sess.run(decoder_op, feed_dict={encode_input: X_test})
+                X_encoder = sess.run(encoder_op, feed_dict={encode_input: X_test})
+                test_loss = sess.run(loss, feed_dict={encode_input: X_test, y_true:X_test})
+                test_loss_list.append((i,test_loss))
 
-            print('Test Loss: %f' % (test_loss))
-            if test_loss <= best_loss:
-                best_loss = test_loss
-                best_loss_step = i
-                best_pred = X_pred_test
+                print('Test Loss: %f' % (test_loss))
+                save_path = saver.save(sess, "autoencoder/model_%s.ckpt" % i)
+                if test_loss <= best_loss:
+                    best_loss = test_loss
+                    best_loss_step = i
+                    best_pred = X_pred_test
 
-    with open("train_loss.csv", "w") as f:
-        f.write("iteration,loss\n")
-        for iter, loss in train_loss_list:
-            f.write("%d,%f\n" % (iter, loss))
-    with open("test_loss.csv", "w") as f:
-        f.write("iteration,loss\n")
-        for iter, loss in test_loss_list:
-            f.write("%d,%f\n" % (iter, loss))
+        with open("result/train_loss.csv", "w") as f:
+            f.write("iteration,loss\n")
+            for iter, loss in train_loss_list:
+                f.write("%d,%f\n" % (iter, loss))
+        with open("result/test_loss.csv", "w") as f:
+            f.write("iteration,loss\n")
+            for iter, loss in test_loss_list:
+                f.write("%d,%f\n" % (iter, loss))
 
-    with open(output_file_name, "w") as outfile:
-        outfile.write("best predicted output\n")
-        for line in best_pred:
-            for data in line:
-                outfile.write(str(data)+" ")            
-            outfile.write("\n")
-        outfile.write("\ntesting loss: " + str(test_loss))
-        outfile.write("\ntraining loss: " + str(train_loss))
-        outfile.write("\nstep to achieve best loss: "+ str(best_loss_step))
-        outfile.write("\ntraining time: " + str(time.time() - sess_start_time))
+        with open(output_file_name, "w") as outfile:
+            outfile.write("best predicted output\n")
+            for line in best_pred:
+                for data in line:
+                    outfile.write(str(data)+" ")
+                outfile.write("\n")
+            outfile.write("\ntesting loss: " + str(test_loss))
+            outfile.write("\ntraining loss: " + str(train_loss))
+            outfile.write("\nstep to achieve best loss: "+ str(best_loss_step))
+            outfile.write("\ntraining time: " + str(time.time() - sess_start_time))
+
 
 
 
