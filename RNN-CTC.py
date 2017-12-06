@@ -4,27 +4,33 @@ import math
 import numpy as np
 import tensorflow as tf
 from utils import *
+import pickle
 
 
-MODEL_PATH = "./"
+MODEL_PATH = "./model/"
 MODEL_NAME = MODEL_PATH + "model"
+RESULT_PATH = "./result_RNN/"
 
 # Data directories. TODO
-DATA_DIR = "./data/"
+DATA_DIR = "./data_test/"
 
+# Constants.
+SPACE_TOKEN = '<space>'
+SPACE_INDEX = 0
+FIRST_INDEX = ord('a') - 1  # 0 is reserved to space
 
 
 # Accounting the 0th index + space + blank label = 28 characters
 NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 
 # Hyper-parameters.
-NUM_EPOCHS = 200
+NUM_EPOCHS = 500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
 BATCH_SIZE = 1
 
 # Optimizer parameters.
-INITIAL_LEARNING_RATE = 1e-2
+INITIAL_LEARNING_RATE = 2e-3
 MOMENTUM = 0.9
 
 TEST_SIZE_RATIO = 0.1
@@ -40,7 +46,7 @@ def main(argv):
     if argv[1] == 'mfcc':
         # inputs shape [num_samples, max_length, num_features]
         # sequence_length shape [num_samples,]
-        inputs = np.load(DATA_DIR + "mfcc/audio_inputs.npy")
+        inputs = np.load(DATA_DIR + "mfcc/inputs.npy")
 
         train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
         train_inputs = np.float32(train_inputs) 
@@ -51,7 +57,8 @@ def main(argv):
         test_sequence_lengths = get_sequence_length(test_inputs)
 
         # read texts 
-        texts = np.load(DATA_DIR + "texts.txt")
+        # texts = np.load(DATA_DIR + "align_text")
+        texts = read_text_file(DATA_DIR + "align_text")
 
         train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
         test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
@@ -71,6 +78,7 @@ def main(argv):
  
     else: 
         #TODO autoencoder inputs
+        print ("autoencoder read files")
     
  
 
@@ -153,6 +161,8 @@ def main(argv):
         train_cost_list = []
         train_label_error_rate_list = []
 
+
+
         for current_epoch in range(NUM_EPOCHS):
             
             train_cost = 0
@@ -183,11 +193,15 @@ def main(argv):
             train_cost /= train_num
             train_label_error_rate /= train_num
 
-            print ("Epoch %d/%d (time: %.3f s)", current_epoch + 1, NUM_EPOCHS, time.time() - start_time)
-            print ("Train cost: %.3f, train label error rate: %.3f", train_cost, train_label_error_rate)
+            if current_epoch % 50 == 0:
+                print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
+                print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
             # Write logs at every iteration.
             train_cost_list.append([current_epoch, train_cost])
             train_label_error_rate_list.append([current_epoch, train_label_error_rate])
+
+            if current_epoch == 200:
+                saver.save(session, MODEL_NAME+"_"+str(current_epoch))
                 
 
         print ("Training time: ", time.time()-start_time)
@@ -204,30 +218,33 @@ def main(argv):
             sequence = [s for s in sequence if s != -1]
             decoded_text = sequence_decoder(sequence)
 
-            print ("Sequence %d/%d", i + 1, test_num)
-            print ("Original:\n%s", test_texts[i])
-            print ("Decoded:\n%s", decoded_text)
+            seq = "Sequence {}/{}".format(i + 1, test_num)
+            org = "Original:\n{}".format(test_texts[i])
+            dec = "Decoded:\n{}".format(decoded_text)
+            print (seq)
+            print (org)
+            print (dec)
 
-            result.append("Sequence %d/%d", i + 1, test_num)
-            result.append("Original:\n%s", test_texts[i])
-            result.apend("Decoded:\n%s", decoded_text)
+            result.append(seq)
+            result.append(org)
+            result.append(dec)
             result.append("\n")
 
         # Save model weights to disk.
-        save_file = saver.save(session, MODEL_NAME)
+        save_file = saver.save(session, MODEL_NAME+"_complete")
 
         # write log files
-        with open("train_cost.csv", "w") as f:
+        with open(RESULT_PATH + "train_cost.csv", "w") as f:
             f.write("iteration,cost\n")
             for iter, loss in train_cost_list:
                 f.write("%d,%f\n" % (iter, loss))
 
-        with open("train_label_error_rate.csv", "w") as f:
+        with open(RESULT_PATH + "train_label_error_rate.csv", "w") as f:
             f.write("iteration, error_rate\n")
             for iter, err in train_label_error_rate_list:
                 f.write("%d,%f\n" % (iter, err))
 
-        with open("result.txt", "w") as f:
+        with open(RESULT_PATH + "result.txt", "w") as f:
             for r in result:
                 f.write(r)
 
