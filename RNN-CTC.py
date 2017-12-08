@@ -7,8 +7,8 @@ from utils import *
 import pickle
 
 
-MODEL_PATH = "./RNN_model/"
-MODEL_NAME = MODEL_PATH + "model"
+# MODEL_PATH = "./RNN_model/"
+# MODEL_NAME = MODEL_PATH + "model"
 # RESULT_PATH = "./RNN_result/"
 
 # Data directories. TODO
@@ -24,10 +24,10 @@ FIRST_INDEX = ord('a') - 1  # 0 is reserved to space
 NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 
 # Hyper-parameters.
-NUM_EPOCHS = 2000
+NUM_EPOCHS = 1500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
-BATCH_SIZE = 1
+BATCH_SIZE = 5
 
 # Optimizer parameters.
 INITIAL_LEARNING_RATE = 1e-3
@@ -47,11 +47,13 @@ def main(argv):
         # inputs shape [num_samples, max_length, num_features]
         # sequence_length shape [num_samples,]
         inputs = np.load(DATA_DIR + "mfcc/inputs.npy")
-        RESULT_PATH = "./RNN_result/mfcc" 
+        RESULT_PATH = "./RNN_result/mfcc/" 
+        MODEL_NAME = "./RNN_model/mfcc/model"
     else: 
         inputs = np.load(DATA_DIR + "autoencoder/inputs.npy")
         inputs = inputs[:,:, np.newaxis]
         RESULT_PATH = "./RNN_result/autoencoder/"
+        MODEL_NAME = "./RNN_model/autoencoder/model"
 
     # Split training and testing inputs
     train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
@@ -186,7 +188,6 @@ def main(argv):
                         labels_placeholder: batch_train_targets,
                         sequence_length_placeholder: batch_train_sequence_lengths}
 
-
                 batch_cost, _ = session.run([cost, optimizer], feed)
                 train_cost += batch_cost * BATCH_SIZE
                 train_label_error_rate += session.run(label_error_rate, feed_dict=feed) * BATCH_SIZE
@@ -208,15 +209,27 @@ def main(argv):
 
         print ("Training time: ", time.time()-start_time)
 
-        test_feed = {inputs_placeholder: test_inputs,
-                     sequence_length_placeholder: test_sequence_lengths}
+        # test_inputs = tf.reshape(test_inputs, [])
+        # test_sequence_lengths = tf.reshape(test_sequence_lengths, [BATCH_SIZE, ])
+
+        test_num = test_inputs.shape[0]
+        r = BATCH_SIZE/test_num -1
+        test_inputs_pl = test_inputs
+        test_sequence_lengths_pl = test_sequence_lengths
+        for i in range(r):
+            test_inputs_pl = np.vstack((test_inputs_pl, test_inputs))
+            test_sequence_lengths_pl = np.append(test_sequence_lengths_pl, test_sequence_lengths)
+
+        test_feed = {inputs_placeholder: test_inputs_pl[0:BATCH_SIZE],
+                     sequence_length_placeholder: test_sequence_lengths_pl[0:BATCH_SIZE]}
         # Decoding.
         decoded_outputs = session.run(decoded[0], feed_dict=test_feed)
         dense_decoded = tf.sparse_tensor_to_dense(decoded_outputs, default_value=-1).eval(session=session)
-        test_num = test_texts.shape[0]
 
         result = []
         for i, sequence in enumerate(dense_decoded):
+            if i >= test_num:
+                break
             sequence = [s for s in sequence if s != -1]
             decoded_text = sequence_decoder(sequence)
 
