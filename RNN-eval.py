@@ -14,7 +14,6 @@ import pickle
 # Data directories. TODO
 DATA_DIR = "./data/"
 pred = True
-eval = "train" #"train" or "test"
 LOAD_MODEL_NAME = "RNN_model/autoencoder/1000_epochs_20_batchsize/model_600.ckpt"
 
 LSTM = True
@@ -236,19 +235,20 @@ def main(argv):
             test_labels_pl = np.append(test_labels_pl, test_labels)
 
         test_targets = sparse_tuples_from_sequences(test_labels_pl[0:BATCH_SIZE])
-        if Eval == "test":
-            test_feed = {inputs_placeholder: test_inputs_pl[0:BATCH_SIZE],
-                         labels_placeholder: test_targets,
-                         sequence_length_placeholder: test_sequence_lengths_pl[0:BATCH_SIZE]}
-        else:
-            test_feed = {inputs_placeholder: train_inputs[0:BATCH_SIZE],
-                          labels_placeholder: sparse_tuples_from_sequences(train_labels[0:BATCH_SIZE]),
-                          sequence_length_placeholder: train_sequence_lengths[0:BATCH_SIZE]
-                          }
+        test_feed = {inputs_placeholder: test_inputs_pl[0:BATCH_SIZE],
+                     labels_placeholder: test_targets,
+                     sequence_length_placeholder: test_sequence_lengths_pl[0:BATCH_SIZE]}
+        test_label_error_rate = session.run(label_error_rate, feed_dict=test_feed)
+        print "test error rate:", test_label_error_rate
+
+        test_feed = {inputs_placeholder: train_inputs[0:BATCH_SIZE],
+                      labels_placeholder: sparse_tuples_from_sequences(train_labels[0:BATCH_SIZE]),
+                      sequence_length_placeholder: train_sequence_lengths[0:BATCH_SIZE]
+                      }
 
         # Decoding.
         test_label_error_rate = session.run(label_error_rate, feed_dict=test_feed)
-        print test_label_error_rate
+        print "train error rate:", test_label_error_rate
         decoded_outputs = session.run(decoded[0], feed_dict=test_feed)
         dense_decoded = tf.sparse_tensor_to_dense(decoded_outputs, default_value=-1).eval(session=session)
 
