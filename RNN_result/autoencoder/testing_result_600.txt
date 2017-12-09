@@ -1,0 +1,150 @@
+Sequence 1/100
+Original:
+bin blue at f two now
+Decoded:
+pin gree it sone aoaon
+Sequence 2/100
+Original:
+bin blue at f three soon
+Decoded:
+pin gree it sone neon
+Sequence 3/100
+Original:
+bin blue at f four please
+Decoded:
+pin gree it sone aoaon
+Sequence 4/100
+Original:
+bin blue at f five again
+Decoded:
+pin gree it soe loon
+Sequence 5/100
+Original:
+bin blue at l six now
+Decoded:
+pin gree it sone aoaon
+Sequence 6/100
+Original:
+bin blue at l seven soon
+Decoded:
+pin gree it soe seon
+Sequence 7/100
+Original:
+bin blue at l eight please
+Decoded:
+piy gree it soe soon
+Sequence 8/100
+Original:
+bin blue at l nine again
+Decoded:
+pin gree it sone aoaon
+Sequence 9/100
+Original:
+bin blue at s one soon
+Decoded:
+pin gree it so a 
+Sequence 10/100
+Original:
+bin blue at s two please
+Decoded:
+pin gree it soe loaon
+Sequence 11/100
+Original:
+bin blue at s three again
+Decoded:
+pin gree it sone aoaon
+Sequence 12/100
+Original:
+bin blue at s zero now
+Decoded:
+pin gree it sone aoaon
+Sequence 13/100
+Original:
+bin blue at z four now
+Decoded:
+pin gree it sone seon
+Sequence 14/100
+Original:
+bin blue at z five soon
+Decoded:
+pin gree it wone aeaon
+Sequence 15/100
+Original:
+bin blue at z six please
+Decoded:
+pin gree it foe aoaon
+Sequence 16/100
+Original:
+bin blue at z seven again
+Decoded:
+pin gree it sone anaon
+Sequence 17/100
+Original:
+bin blue by f six now
+Decoded:
+pin gree it neon
+Sequence 18/100
+Original:
+bin blue by f seven soon
+Decoded:
+lan ree iy soe aoaon
+Sequence 19/100
+Original:
+bin blue by f eight please
+Decoded:
+pin gree it soe loaon
+Sequence 20/100
+Original:
+bin blue by f nine again
+Decoded:
+pin gree it none aoaon
+Sequence 21/100
+Original:
+bin blue by m one soon
+Decoded:
+pin gree it fine loaon
+Sequence 22/100
+Original:
+bin blue by m two please
+Decoded:
+pit ree iy soe aoaon
+Sequence 23/100
+Original:
+bin blue by m three again
+Decoded:
+piy gree iy sone aoaon
+Sequence 24/100
+Original:
+bin blue by m zero now
+Decoded:
+pin wree it soe aoaon
+Sequence 25/100
+Original:
+bin blue by s four now
+Decoded:
+pay gree it soa
+Sequence 26/100
+Original:
+bin blue by s five soon
+Decoded:
+laen gree bt soe aoaon
+Sequence 27/100
+Original:
+bin blue by s six please
+Decoded:
+pin gree it sine aoaon
+Sequence 28/100
+Original:
+bin blue by s seven again
+Decoded:
+pin gree it so aoaon
+Sequence 29/100
+Original:
+bin blue by z eight now
+Decoded:
+pin gree it sone aoaon
+Sequence 30/100
+Original:
+bin blue by z nine soon
+Decoded:
+pin gree it soe aoon

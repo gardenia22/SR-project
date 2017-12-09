@@ -1,0 +1,100 @@
+Sequence 81/100
+Original:
+bin blue in e nine soon
+Decoded:
+pin gree it iv sgaon
+Sequence 82/100
+Original:
+lay red in k five again
+Decoded:
+piy gree it sone sgaon
+Sequence 83/100
+Original:
+place red by x four please
+Decoded:
+piy gree iy sene seon
+Sequence 84/100
+Original:
+set white by o nine soon
+Decoded:
+pey gree bt eve agaon
+Sequence 85/100
+Original:
+lay green by m two now
+Decoded:
+piy gree it eve loaon
+Sequence 86/100
+Original:
+place blue by v nine again
+Decoded:
+piy gree it sone agaon
+Sequence 87/100
+Original:
+bin red with g six now
+Decoded:
+pin gree it sone anaon
+Sequence 88/100
+Original:
+set white with sp v nine again
+Decoded:
+pet gree it eve feve lnaon
+Sequence 89/100
+Original:
+place blue with j two now
+Decoded:
+pce gree it fene soaon
+Sequence 90/100
+Original:
+bin blue in f one again
+Decoded:
+pin gree it sone aoaon
+Sequence 91/100
+Original:
+bin blue with g one soon
+Decoded:
+pe bree it soe aoaon
+Sequence 92/100
+Original:
+lay red at y five soon
+Decoded:
+pey gree it aoaon
+Sequence 93/100
+Original:
+bin red sp by g two now
+Decoded:
+pin gree it sone sgaon
+Sequence 94/100
+Original:
+place green with l two please
+Decoded:
+pce gree it sene leon
+Sequence 95/100
+Original:
+lay blue with y seven soon
+Decoded:
+pce gree it wone loon
+Sequence 96/100
+Original:
+lay white at z one soon
+Decoded:
+piy gree bt seve aoaon
+Sequence 97/100
+Original:
+lay blue in d four please
+Decoded:
+pie wree it nove aeon
+Sequence 98/100
+Original:
+set red at u four please
+Decoded:
+piy gree it soe snon
+Sequence 99/100
+Original:
+set white with c seven again
+Decoded:
+pin gree it wone sgon
+Sequence 100/100
+Original:
+set white at b nine again
+Decoded:
+pay gree it sene agaon

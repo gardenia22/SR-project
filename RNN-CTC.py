@@ -28,7 +28,7 @@ NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 NUM_EPOCHS = 500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
-BATCH_SIZE = 1
+BATCH_SIZE = 20
 
 # Optimizer parameters.
 INITIAL_LEARNING_RATE = 1e-3
@@ -242,17 +242,18 @@ def main(argv):
             # validation_label_error_rate /= validation_num
 
 
-            if current_epoch % 50 == 0:
+
+
+            if current_epoch % 25 == 0:
+                print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
+                print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
+                
                 D = session.run(decoded[0], feed_dict=feed)
 
                 dense_D = tf.sparse_tensor_to_dense(D, default_value=-1).eval(session=session)
 
                 dt = sequence_decoder(dense_D[0])
-                print ("1000-------", dt, train_texts[0])
-
-            if current_epoch % 25 == 0:
-                print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
-                print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
+                print ("decode training ----------", dt, train_texts[0])
                 # print ("Validation cost: {}, validation label error rate: {}".format(validation_cost, validation_label_error_rate))
 
             # Write logs at every iteration.
