@@ -1,0 +1,100 @@
+Sequence 81/100
+Original:
+lay blue at q six please
+Decoded:
+lae   
+Sequence 82/100
+Original:
+lay green in s one again
+Decoded:
+lae       
+Sequence 83/100
+Original:
+lay green at z seven soon
+Decoded:
+lae   
+Sequence 84/100
+Original:
+set green by p seven again
+Decoded:
+lae    
+Sequence 85/100
+Original:
+lay red at e two now
+Decoded:
+lae      
+Sequence 86/100
+Original:
+bin green with b six please
+Decoded:
+lae      
+Sequence 87/100
+Original:
+set blue by h two now
+Decoded:
+lae      
+Sequence 88/100
+Original:
+place blue by j one again
+Decoded:
+lae       
+Sequence 89/100
+Original:
+place white in x two please
+Decoded:
+lae       
+Sequence 90/100
+Original:
+bin white by t nine again
+Decoded:
+lae       
+Sequence 91/100
+Original:
+lay blue in d three soon
+Decoded:
+lae    
+Sequence 92/100
+Original:
+bin blue by z nine soon
+Decoded:
+lae    
+Sequence 93/100
+Original:
+bin white by h zero please
+Decoded:
+lae   
+Sequence 94/100
+Original:
+place blue by i nine soon
+Decoded:
+lae    
+Sequence 95/100
+Original:
+bin blue at z seven again
+Decoded:
+lae        
+Sequence 96/100
+Original:
+place red with d seven again
+Decoded:
+le        
+Sequence 97/100
+Original:
+place white at j nine again
+Decoded:
+lse      
+Sequence 98/100
+Original:
+place red by j seven again
+Decoded:
+lae      
+Sequence 99/100
+Original:
+set green by j two please
+Decoded:
+lae e    
+Sequence 100/100
+Original:
+lay white in l zero please
+Decoded:
+lae       

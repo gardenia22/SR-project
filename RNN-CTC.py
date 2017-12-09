@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 from utils import *
 import pickle
+import random
 
 
 # MODEL_PATH = "./RNN_model/"
@@ -24,21 +25,23 @@ FIRST_INDEX = ord('a') - 1  # 0 is reserved to space
 NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 
 # Hyper-parameters.
-NUM_EPOCHS = 1500
+NUM_EPOCHS = 500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
-BATCH_SIZE = 5
+BATCH_SIZE = 1
 
 # Optimizer parameters.
 INITIAL_LEARNING_RATE = 1e-3
-MOMENTUM = 0.9
+MOMENTUM = 0.8
 
 TEST_SIZE_RATIO = 0.1
 
-# Readme: how datas are stored:
-# data/mfcc/input_file,
-# data/autoencoder/input_file
-# data/text_file
+'''
+train 0...0.8
+val  0.8---0.9
+test 0.9...1
+
+'''
 
 def main(argv):
     # arguement option: mfcc and autoencoder 
@@ -55,6 +58,15 @@ def main(argv):
         RESULT_PATH = "./RNN_result/autoencoder/"
         MODEL_NAME = "./RNN_model/autoencoder/model"
 
+    texts = read_text_file(DATA_DIR + "align_text")
+
+    # shuffle
+    c = list(zip(inputs, texts))
+    random.shuffle(c)
+    inputs, texts = zip(*c)
+    inputs = np.array(inputs)
+    texts = np.array(texts)
+
     # Split training and testing inputs
     train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
     train_inputs = np.float32(train_inputs) 
@@ -63,21 +75,26 @@ def main(argv):
     test_inputs = inputs[int(inputs.shape[0] * (1-TEST_SIZE_RATIO)):] 
     test_inputs = np.float32(test_inputs) 
     test_sequence_lengths = get_sequence_length(test_inputs)
+
+    # validation_inputs = inputs[int(inputs.shape[0] * (1-2*TEST_SIZE_RATIO)):int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
+    # validation_inputs = np.float32(validation_inputs)
+    # validation_sequence_lengths = get_sequence_length(validation_inputs)
         
     # read texts 
-    texts = read_text_file(DATA_DIR + "align_text")
-
     train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
     test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
+    # validation_texts = texts[int(texts.shape[0] * (1-2*TEST_SIZE_RATIO)):int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
 
 
     # read labels
+
     labels = texts_encoder(texts, first_index=FIRST_INDEX,
                                   space_index=SPACE_INDEX,
                                   space_token=SPACE_TOKEN)
-
     train_labels = labels[:int(labels.shape[0] * (1-TEST_SIZE_RATIO))]
     test_labels = labels[int(labels.shape[0] * (1-TEST_SIZE_RATIO)):] 
+    # validation_labels = labels[int(labels.shape[0] * (1-2*TEST_SIZE_RATIO)):int(labels.shape[0] * (1-TEST_SIZE_RATIO))] 
+
 
 
 
@@ -98,18 +115,30 @@ def main(argv):
 
         # 1d array of size [batch_size].
         sequence_length_placeholder = tf.placeholder(tf.int32, [None])
-
+        '''
         # create a BasicRNNCell
         rnn_cell = tf.nn.rnn_cell.BasicRNNCell(NUM_HIDDEN)
 
         # defining initial state
         initial_state = rnn_cell.zero_state(BATCH_SIZE, dtype=tf.float32)
-
+ 
         
         # 'inpus_placeholder' is a tensor of shape [batch_size, max_time, cell_state_size]
         # 'outputs' is a tensor of shape [batch_size, max_time, cell_state_size]
         # 'state' is a tensor of shape [batch_size, cell_state_size]
-        outputs, state = tf.nn.dynamic_rnn(rnn_cell, inputs_placeholder, sequence_length=sequence_length_placeholder, initial_state=initial_state, dtype=tf.float32)
+        outputs, state = tf.nn.dynamic_rnn(rnn_cell, inputs_placeholder, initial_state=initial_state, sequence_length=sequence_length_placeholder, dtype=tf.float32)
+        '''
+
+        # Defining the cell.
+        cell = tf.contrib.rnn.LSTMCell(NUM_HIDDEN, state_is_tuple=True)
+
+        # Stacking rnn cells.
+        stack = tf.contrib.rnn.MultiRNNCell([cell] * NUM_LAYERS,
+                                            state_is_tuple=True)
+
+        # Creates a recurrent neural network.
+        outputs, _ = tf.nn.dynamic_rnn(stack, inputs_placeholder, sequence_length_placeholder, dtype=tf.float32)
+
 
       
         shape = tf.shape(inputs_placeholder)
@@ -138,7 +167,7 @@ def main(argv):
             loss = tf.nn.ctc_loss(labels_placeholder, logits, sequence_length_placeholder)
             cost = tf.reduce_mean(loss)
 
-        optimizer = tf.train.MomentumOptimizer(INITIAL_LEARNING_RATE, 0.9).minimize(cost)
+        optimizer = tf.train.MomentumOptimizer(INITIAL_LEARNING_RATE, MOMENTUM).minimize(cost)
 
         # CTC decoder.
         decoded, neg_sum_logits = tf.nn.ctc_greedy_decoder(logits, sequence_length_placeholder)
@@ -147,11 +176,12 @@ def main(argv):
                                                            labels_placeholder))
 
 
+
         print ("Finished building graph.")
 
     with tf.Session(graph=graph) as session:
 
-        print ("Running session...")
+        print ("Running session ...BATCH_SIZE:", BATCH_SIZE, "NUM_EPOCHS:", NUM_EPOCHS, "MOMENTUM:", MOMENTUM)
 
         # Saver op to save and restore all the variables.
         saver = tf.train.Saver()
@@ -160,7 +190,7 @@ def main(argv):
         tf.global_variables_initializer().run()
 
         train_num = train_inputs.shape[0]
-        num_batches_per_epoch = int(math.ceil(train_num / BATCH_SIZE))
+        num_batches_per_epoch = int(math.ceil(train_num *1.0/ BATCH_SIZE))
 
         train_cost_list = []
         train_label_error_rate_list = []
@@ -187,30 +217,54 @@ def main(argv):
                 feed = {inputs_placeholder: batch_train_inputs,
                         labels_placeholder: batch_train_targets,
                         sequence_length_placeholder: batch_train_sequence_lengths}
+                # print ("batch_train_inputs.shape", batch_train_inputs.shape)
+                # print ("labels_placeholder.shape", labels_placeholder.get_shape())
+                # print ("sequence_length_placeholder.shape", sequence_length_placeholder.shape)
+
 
                 batch_cost, _ = session.run([cost, optimizer], feed)
                 train_cost += batch_cost * BATCH_SIZE
+
                 train_label_error_rate += session.run(label_error_rate, feed_dict=feed) * BATCH_SIZE
 
 
             train_cost /= train_num
             train_label_error_rate /= train_num
 
+            # validation_feed = {inputs_placeholder: validation_inputs,
+            #                    labels_placeholder: validation_labels,
+            #                    sequence_length_placeholder: validation_sequence_lengths}
+
+            # validation_cost, validation_label_error_rate = session.run([cost, label_error_rate],
+            #                                                            feed_dict=validation_feed)
+
+            # validation_cost /= validation_num
+            # validation_label_error_rate /= validation_num
+
+
             if current_epoch % 50 == 0:
+                D = session.run(decoded[0], feed_dict=feed)
+
+                dense_D = tf.sparse_tensor_to_dense(D, default_value=-1).eval(session=session)
+
+                dt = sequence_decoder(dense_D[0])
+                print ("1000-------", dt, train_texts[0])
+
+            if current_epoch % 25 == 0:
                 print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
                 print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
+                # print ("Validation cost: {}, validation label error rate: {}".format(validation_cost, validation_label_error_rate))
+
             # Write logs at every iteration.
             train_cost_list.append([current_epoch, train_cost])
             train_label_error_rate_list.append([current_epoch, train_label_error_rate])
 
             if current_epoch % 200 == 0:
-                saver.save(session, MODEL_NAME+"_"+str(current_epoch))
+                saver.save(session, MODEL_NAME+"_"+str(current_epoch)+".ckpt")
                 
 
         print ("Training time: ", time.time()-start_time)
 
-        # test_inputs = tf.reshape(test_inputs, [])
-        # test_sequence_lengths = tf.reshape(test_sequence_lengths, [BATCH_SIZE, ])
 
         test_num = test_inputs.shape[0]
         r = BATCH_SIZE/test_num -1
@@ -220,33 +274,50 @@ def main(argv):
             test_inputs_pl = np.vstack((test_inputs_pl, test_inputs))
             test_sequence_lengths_pl = np.append(test_sequence_lengths_pl, test_sequence_lengths)
 
-        test_feed = {inputs_placeholder: test_inputs_pl[0:BATCH_SIZE],
-                     sequence_length_placeholder: test_sequence_lengths_pl[0:BATCH_SIZE]}
-        # Decoding.
-        decoded_outputs = session.run(decoded[0], feed_dict=test_feed)
-        dense_decoded = tf.sparse_tensor_to_dense(decoded_outputs, default_value=-1).eval(session=session)
 
-        result = []
-        for i, sequence in enumerate(dense_decoded):
-            if i >= test_num:
-                break
-            sequence = [s for s in sequence if s != -1]
-            decoded_text = sequence_decoder(sequence)
+        num_batches_per_test = int(math.ceil(test_num *1.0/ BATCH_SIZE))
 
-            seq = "Sequence {}/{}\n".format(i + 1, test_num)
-            org = "Original:\n{}\n".format(test_texts[i])
-            dec = "Decoded:\n{}\n".format(decoded_text)
-            print (seq)
-            print (org)
-            print (dec)
+        for step in range(num_batches_per_test):
+            # Format batches.
+            if int(test_num / ((step + 1) * BATCH_SIZE)) >= 1:
+                indexes = [i % test_num for i in range(step * BATCH_SIZE, (step + 1) * BATCH_SIZE)]
+            else:
+                indexes = [i % test_num for i in range(step * BATCH_SIZE, test_num)]
 
-            result.append(seq)
-            result.append(org)
-            result.append(dec)
-            
+            batch_test_inputs = test_inputs[indexes]
+            batch_test_sequence_lengths = test_sequence_lengths[indexes]
+            batch_test_targets = sparse_tuples_from_sequences(test_labels[indexes])
+
+
+            test_feed = {inputs_placeholder: batch_test_inputs,
+                         sequence_length_placeholder: batch_test_sequence_lengths}
+            # Decoding.
+            decoded_outputs = session.run(decoded[0], feed_dict=test_feed)
+            dense_decoded = tf.sparse_tensor_to_dense(decoded_outputs, default_value=-1).eval(session=session)
+
+            result = []
+            for i, sequence in enumerate(dense_decoded):
+                if i >= test_num:
+                    break
+                sequence = [s for s in sequence if s != -1]
+        
+
+                decoded_text = sequence_decoder(sequence)
+
+                seq = "Sequence {}/{}\n".format(i + 1+ step*BATCH_SIZE, test_num)
+                org = "Original:\n{}\n".format(test_texts[step*BATCH_SIZE + i]) #......
+                dec = "Decoded:\n{}\n".format(decoded_text)
+                print (seq)
+                print (org)
+                print (dec)
+
+                result.append(seq)
+                result.append(org)
+                result.append(dec)
+                
 
         # Save model weights to disk.
-        save_file = saver.save(session, MODEL_NAME+"_complete")
+        save_file = saver.save(session, MODEL_NAME+"_complete.ckpt")
 
         # write log files
         with open(RESULT_PATH + "train_cost.csv", "w") as f:
