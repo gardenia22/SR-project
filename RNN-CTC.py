@@ -159,7 +159,7 @@ def main(argv):
             loss = tf.nn.ctc_loss(labels_placeholder, logits, sequence_length_placeholder)
             cost = tf.reduce_mean(loss)
 
-        optimizer = tf.train.MomentumOptimizer(INITIAL_LEARNING_RATE, 0.9).minimize(cost)
+        optimizer = tf.train.MomentumOptimizer(INITIAL_LEARNING_RATE, MOMENTUM).minimize(cost)
 
         # CTC decoder.
         decoded, neg_sum_logits = tf.nn.ctc_greedy_decoder(logits, sequence_length_placeholder)
@@ -251,7 +251,7 @@ def main(argv):
             train_cost_list.append([current_epoch, train_cost])
             train_label_error_rate_list.append([current_epoch, train_label_error_rate])
 
-            if current_epoch % 200 == 0:
+            if current_epoch % 500 == 0:
                 saver.save(session, MODEL_NAME+"_"+str(current_epoch))
                 
 
