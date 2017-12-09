@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 from utils import *
 import pickle
+import random
 
 
 # MODEL_PATH = "./RNN_model/"
@@ -24,14 +25,14 @@ FIRST_INDEX = ord('a') - 1  # 0 is reserved to space
 NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 
 # Hyper-parameters.
-NUM_EPOCHS = 1000
+NUM_EPOCHS = 500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
-BATCH_SIZE = 20
+BATCH_SIZE = 1
 
 # Optimizer parameters.
 INITIAL_LEARNING_RATE = 1e-3
-MOMENTUM = 0.9
+MOMENTUM = 0.8
 
 TEST_SIZE_RATIO = 0.1
 
@@ -50,15 +51,24 @@ def main(argv):
         # sequence_length shape [num_samples,]
         inputs = np.load(DATA_DIR + "mfcc/inputs.npy")
         RESULT_PATH = "./RNN_result/mfcc/" 
-        MODEL_NAME = "./RNN_model/mfcc/model.ckpt"
+        MODEL_NAME = "./RNN_model/mfcc/model"
     else: 
         inputs = np.load(DATA_DIR + "autoencoder/inputs.npy")
         inputs = inputs[:,:, np.newaxis]
         RESULT_PATH = "./RNN_result/autoencoder/"
-        MODEL_NAME = "./RNN_model/autoencoder/model.ckpt"
+        MODEL_NAME = "./RNN_model/autoencoder/model"
+
+    texts = read_text_file(DATA_DIR + "align_text")
+
+    # shuffle
+    c = list(zip(inputs, texts))
+    random.shuffle(c)
+    inputs, texts = zip(*c)
+    inputs = np.array(inputs)
+    texts = np.array(texts)
 
     # Split training and testing inputs
-    train_inputs = inputs[:int(inputs.shape[0] * (1-2*TEST_SIZE_RATIO))]
+    train_inputs = inputs[:int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
     train_inputs = np.float32(train_inputs) 
     train_sequence_lengths = get_sequence_length(train_inputs)
 
@@ -66,26 +76,24 @@ def main(argv):
     test_inputs = np.float32(test_inputs) 
     test_sequence_lengths = get_sequence_length(test_inputs)
 
-    validation_inputs = inputs[int(inputs.shape[0] * (1-2*TEST_SIZE_RATIO)):int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
-    validation_inputs = np.float32(validation_inputs)
-    validation_sequence_lengths = get_sequence_length(validation_inputs)
+    # validation_inputs = inputs[int(inputs.shape[0] * (1-2*TEST_SIZE_RATIO)):int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
+    # validation_inputs = np.float32(validation_inputs)
+    # validation_sequence_lengths = get_sequence_length(validation_inputs)
         
     # read texts 
-    texts = read_text_file(DATA_DIR + "align_text")
-
-    train_texts = texts[:int(texts.shape[0] * (1-2*TEST_SIZE_RATIO))]
+    train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
     test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
-    validation_texts = texts[int(texts.shape[0] * (1-2*TEST_SIZE_RATIO)):int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
+    # validation_texts = texts[int(texts.shape[0] * (1-2*TEST_SIZE_RATIO)):int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
 
 
     # read labels
+
     labels = texts_encoder(texts, first_index=FIRST_INDEX,
                                   space_index=SPACE_INDEX,
                                   space_token=SPACE_TOKEN)
-
-    train_labels = labels[:int(labels.shape[0] * (1-2*TEST_SIZE_RATIO))]
+    train_labels = labels[:int(labels.shape[0] * (1-TEST_SIZE_RATIO))]
     test_labels = labels[int(labels.shape[0] * (1-TEST_SIZE_RATIO)):] 
-    validation_labels = labels[int(labels.shape[0] * (1-2*TEST_SIZE_RATIO)):int(labels.shape[0] * (1-TEST_SIZE_RATIO))] 
+    # validation_labels = labels[int(labels.shape[0] * (1-2*TEST_SIZE_RATIO)):int(labels.shape[0] * (1-TEST_SIZE_RATIO))] 
 
 
 
@@ -173,7 +181,7 @@ def main(argv):
 
     with tf.Session(graph=graph) as session:
 
-        print ("Running session ...BATCH_SIZE:", BATCH_SIZE, "NUM_EPOCHS:", NUM_EPOCHS)
+        print ("Running session ...BATCH_SIZE:", BATCH_SIZE, "NUM_EPOCHS:", NUM_EPOCHS, "MOMENTUM:", MOMENTUM)
 
         # Saver op to save and restore all the variables.
         saver = tf.train.Saver()
@@ -234,7 +242,7 @@ def main(argv):
             # validation_label_error_rate /= validation_num
 
 
-            if current_epoch % 100 == 0:
+            if current_epoch % 50 == 0:
                 D = session.run(decoded[0], feed_dict=feed)
 
                 dense_D = tf.sparse_tensor_to_dense(D, default_value=-1).eval(session=session)
@@ -242,7 +250,7 @@ def main(argv):
                 dt = sequence_decoder(dense_D[0])
                 print ("1000-------", dt, train_texts[0])
 
-            if current_epoch % 50 == 0:
+            if current_epoch % 25 == 0:
                 print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
                 print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
                 # print ("Validation cost: {}, validation label error rate: {}".format(validation_cost, validation_label_error_rate))
@@ -251,8 +259,8 @@ def main(argv):
             train_cost_list.append([current_epoch, train_cost])
             train_label_error_rate_list.append([current_epoch, train_label_error_rate])
 
-            if current_epoch % 500 == 0:
-                saver.save(session, MODEL_NAME+"_"+str(current_epoch))
+            if current_epoch % 200 == 0:
+                saver.save(session, MODEL_NAME+"_"+str(current_epoch)+".ckpt")
                 
 
         print ("Training time: ", time.time()-start_time)
@@ -297,7 +305,7 @@ def main(argv):
                 decoded_text = sequence_decoder(sequence)
 
                 seq = "Sequence {}/{}\n".format(i + 1+ step*BATCH_SIZE, test_num)
-                org = "Original:\n{}\n".format(train_texts[step*BATCH_SIZE + i])
+                org = "Original:\n{}\n".format(test_texts[step*BATCH_SIZE + i]) #......
                 dec = "Decoded:\n{}\n".format(decoded_text)
                 print (seq)
                 print (org)
@@ -309,7 +317,7 @@ def main(argv):
                 
 
         # Save model weights to disk.
-        save_file = saver.save(session, MODEL_NAME+"_complete")
+        save_file = saver.save(session, MODEL_NAME+"_complete.ckpt")
 
         # write log files
         with open(RESULT_PATH + "train_cost.csv", "w") as f:
