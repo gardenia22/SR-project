@@ -1,0 +1,150 @@
+Sequence 1/100
+Original:
+bin blue at f two now
+Decoded:
+bin blue at two now
+Sequence 2/100
+Original:
+bin blue at f three soon
+Decoded:
+bin blue at hre se soon
+Sequence 3/100
+Original:
+bin blue at f four please
+Decoded:
+bin blue at four please
+Sequence 4/100
+Original:
+bin blue at f five again
+Decoded:
+bin bluet  fiv again
+Sequence 5/100
+Original:
+bin blue at l six now
+Decoded:
+bin blue at  sei now
+Sequence 6/100
+Original:
+bin blue at l seven soon
+Decoded:
+bin blue at  see soon
+Sequence 7/100
+Original:
+bin blue at l eight please
+Decoded:
+bin blue at  please
+Sequence 8/100
+Original:
+bin blue at l nine again
+Decoded:
+bin blue at  nine again
+Sequence 9/100
+Original:
+bin blue at s one soon
+Decoded:
+bin blue at oe soon
+Sequence 10/100
+Original:
+bin blue at s two please
+Decoded:
+bin blue at twoh please
+Sequence 11/100
+Original:
+bin blue at s three again
+Decoded:
+bin blue at thre again
+Sequence 12/100
+Original:
+bin blue at s zero now
+Decoded:
+bin blue at  szero now
+Sequence 13/100
+Original:
+bin blue at z four now
+Decoded:
+bin blue tt s four now
+Sequence 14/100
+Original:
+bin blue at z five soon
+Decoded:
+bin blue at z five soon
+Sequence 15/100
+Original:
+bin blue at z six please
+Decoded:
+bin blue it z si lease
+Sequence 16/100
+Original:
+bin blue at z seven again
+Decoded:
+bin blue at  se again
+Sequence 17/100
+Original:
+bin blue by f six now
+Decoded:
+bin blue by  ti x now
+Sequence 18/100
+Original:
+bin blue by f seven soon
+Decoded:
+bin blue by see soon
+Sequence 19/100
+Original:
+bin blue by f eight please
+Decoded:
+bin blue by ih please
+Sequence 20/100
+Original:
+bin blue by f nine again
+Decoded:
+bin blue by nine again
+Sequence 21/100
+Original:
+bin blue by m one soon
+Decoded:
+bin blue by  oe soon
+Sequence 22/100
+Original:
+bin blue by m two please
+Decoded:
+bin blue  y w please
+Sequence 23/100
+Original:
+bin blue by m three again
+Decoded:
+bin blue by  three again
+Sequence 24/100
+Original:
+bin blue by m zero now
+Decoded:
+bin blue by  zero now
+Sequence 25/100
+Original:
+bin blue by s four now
+Decoded:
+bin blue by  four now
+Sequence 26/100
+Original:
+bin blue by s five soon
+Decoded:
+bin blue by  five soon
+Sequence 27/100
+Original:
+bin blue by s six please
+Decoded:
+bin blue by splease
+Sequence 28/100
+Original:
+bin blue by s seven again
+Decoded:
+bin blue by  see again
+Sequence 29/100
+Original:
+bin blue by z eight now
+Decoded:
+bin blue by s  eiht now
+Sequence 30/100
+Original:
+bin blue by z nine soon
+Decoded:
+bin blue by z  e soon

@@ -7,14 +7,17 @@ from utils import *
 import pickle
 
 
-# MODEL_PATH = "./RNN_model/"
-# MODEL_NAME = MODEL_PATH + "model"
-# RESULT_PATH = "./RNN_result/"
 
 # Data directories. TODO
 DATA_DIR = "./data/"
 pred = True
 LOAD_MODEL_NAME = "RNN_model/autoencoder/1000_epochs_20_batchsize/model_600.ckpt"
+# LOAD_MODEL_NAME = "RNN_model/autoencoder/1000_epochs_20_batchsize/model_400.ckpt"
+# LOAD_MODEL_NAME = "RNN_model/autoencoder/500_epochs_20_batchsize/model_complete.ckpt"
+
+
+
+# LOAD_MODEL_NAME = "RNN_model/mfcc_best/model.ckpt_complete"
 
 LSTM = True
 # Constants.
@@ -38,10 +41,7 @@ MOMENTUM = 0.9
 
 TEST_SIZE_RATIO = 0.1
 
-# Readme: how datas are stored:
-# data/mfcc/input_file,
-# data/autoencoder/input_file
-# data/text_file
+
 
 def main(argv):
     # arguement option: mfcc and autoencoder 
@@ -93,6 +93,7 @@ def main(argv):
     with graph.as_default():
 
         print ("Building graph...")
+        print ("LOAD_MODEL_NAME: ", LOAD_MODEL_NAME)
         
         inputs_placeholder = tf.placeholder(tf.float32, [None, None, NUM_FEATURES])
 
@@ -166,64 +167,7 @@ def main(argv):
         saver = tf.train.Saver()
         if pred == True:
             saver.restore(session, LOAD_MODEL_NAME)
-        else:
-           # Initialize the weights and biases.
-            tf.global_variables_initializer().run()
-
-            train_num = train_inputs.shape[0]
-            num_batches_per_epoch = int(math.ceil(train_num * 1.0/ BATCH_SIZE))
-
-            train_cost_list = []
-            train_label_error_rate_list = []
-
-
-
-            for current_epoch in range(NUM_EPOCHS):
-
-                train_cost = 0
-                train_label_error_rate = 0
-                start_time = time.time()
-                print "batch num", num_batches_per_epoch
-                for step in range(num_batches_per_epoch):
-                    # Format batches.
-                    if int(train_num / ((step + 1) * BATCH_SIZE)) >= 1:
-                        indexes = [i % train_num for i in range(step * BATCH_SIZE, (step + 1) * BATCH_SIZE)]
-                    else:
-                        indexes = [i % train_num for i in range(step * BATCH_SIZE, train_num)]
-
-                    batch_train_inputs = train_inputs[indexes]
-                    batch_train_sequence_lengths = train_sequence_lengths[indexes]
-                    batch_train_targets = sparse_tuples_from_sequences(train_labels[indexes])
-
-
-                    feed = {inputs_placeholder: batch_train_inputs,
-                            labels_placeholder: batch_train_targets,
-                            sequence_length_placeholder: batch_train_sequence_lengths}
-
-                    batch_cost, _ = session.run([cost, optimizer], feed)
-                    train_cost += batch_cost * len(indexes)
-                    train_label_error_rate += session.run(label_error_rate, feed_dict=feed) * BATCH_SIZE
-                    #print batch_train_inputs.shape
-                    print len(indexes), session.run(label_error_rate, feed_dict=feed)
-                train_cost /= train_num
-                train_label_error_rate /= train_num
-
-                if current_epoch % 1 == 0:
-                    print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
-                    print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
-                # Write logs at every iteration.
-                train_cost_list.append([current_epoch, train_cost])
-                train_label_error_rate_list.append([current_epoch, train_label_error_rate])
-
-                if current_epoch % 50 == 0:
-                    saver.save(session, MODEL_NAME+"_"+str(current_epoch))
-
-
-            print ("Training time: ", time.time()-start_time)
-
-        # test_inputs = tf.reshape(test_inputs, [])
-        # test_sequence_lengths = tf.reshape(test_sequence_lengths, [BATCH_SIZE, ])
-
+ 
         test_num = test_inputs.shape[0]
         r = BATCH_SIZE/test_num -1
         test_inputs_pl = test_inputs
@@ -253,45 +197,31 @@ def main(argv):
         dense_decoded = tf.sparse_tensor_to_dense(decoded_outputs, default_value=-1).eval(session=session)
 
         result = []
-        # for i, sequence in enumerate(dense_decoded):
-        #     if i >= test_num:
-        #         break
-        #     sequence = [s for s in sequence if s != -1]
-        #     decoded_text = sequence_decoder(sequence)
-        #
-        #     seq = "Sequence {}/{}\n".format(i + 1, test_num)
-        #     org = "Original:\n{}\n".format(train_texts[i])
-        #     dec = "Decoded:\n{}\n".format(decoded_text)
-        #     print (seq)
-        #     print (org)
-        #     print (dec)
-        #
-        #     result.append(seq)
-        #     result.append(org)
-        #     result.append(dec)
+        for i, sequence in enumerate(dense_decoded):
+            if i >= test_num:
+                break
+            sequence = [s for s in sequence if s != -1]
+            decoded_text = sequence_decoder(sequence)
+        
+            seq = "Sequence {}/{}\n".format(i + 1, test_num)
+            org = "Original:\n{}\n".format(train_texts[i])
+            dec = "Decoded:\n{}\n".format(decoded_text)
+            # print (seq)
+            # print (org)
+            # print (dec)
+        
+            result.append(seq)
+            result.append(org)
+            result.append(dec)
 
 
-        # Save model weights to disk.
-        save_file = saver.save(session, MODEL_NAME+"_complete")
-
-        if pred == False:
-            # write log files
-            with open(RESULT_PATH + "train_cost.csv", "w") as f:
-                f.write("iteration,cost\n")
-                for iter, loss in train_cost_list:
-                    f.write("%d,%f\n" % (iter, loss))
-
-            with open(RESULT_PATH + "train_label_error_rate.csv", "w") as f:
-                f.write("iteration, error_rate\n")
-                for iter, err in train_label_error_rate_list:
-                    f.write("%d,%f\n" % (iter, err))
-
-            with open(RESULT_PATH + "result.txt", "w") as f:
-                for r in result:
-                    f.write(r)
+    
+        with open(RESULT_PATH + "testing_result.txt", "w") as f:
+            for r in result:
+                f.write(r)
+        print ("testing result saved in", RESULT_PATH + "testing_result.txt")
 
 
-            print ("Model saved in file: %s", save_file)
 
 
 

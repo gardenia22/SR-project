@@ -1,0 +1,92 @@
+('Running session ...BATCH_SIZE:', 20, 'NUM_EPOCHS:', 1000, 'MOMENTUM:', 0.8)
+('1000-------', '', 'set green in i five again')
+Epoch 1/1000
+Train cost: 106.988948568, train label error rate: 0.995319628716
+Epoch 26/1000
+Train cost: 68.6775297377, train label error rate: 1.0
+Epoch 51/1000
+Train cost: 74.3583363003, train label error rate: 0.920989077621
+Epoch 76/1000
+Train cost: 57.6563006931, train label error rate: 0.845901075999
+('1000-------', 'le bre it e __', 'set green in i five again')
+Epoch 101/1000
+Train cost: 46.2328149584, train label error rate: 0.663631411393
+Epoch 126/1000
+Train cost: 41.452192688, train label error rate: 0.635998796092
+Epoch 151/1000
+Train cost: 38.1567376879, train label error rate: 0.595574567053
+Epoch 176/1000
+Train cost: 36.4163338555, train label error rate: 0.579550046391
+('1000-------', 'let wree it h tir s__', 'set green in i five again')
+Epoch 201/1000
+Train cost: 35.4388986376, train label error rate: 0.560484234492
+Epoch 226/1000
+Train cost: 34.443632253, train label error rate: 0.555272192425
+Epoch 251/1000
+Train cost: 33.4720650567, train label error rate: 0.550024814076
+Epoch 276/1000
+Train cost: 32.978345108, train label error rate: 0.558353020085
+('1000-------', 'pen bree it e fire so__', 'set green in i five again')
+Epoch 301/1000
+Train cost: 32.664716551, train label error rate: 0.559295035733
+Epoch 326/1000
+Train cost: 32.4484209273, train label error rate: 0.556364292569
+Epoch 351/1000
+Train cost: 32.2672907935, train label error rate: 0.553726620144
+Epoch 376/1000
+Train cost: 32.142626275, train label error rate: 0.552452554968
+('1000-------', 'pan bree it e fire so__', 'set green in i five again')
+Epoch 401/1000
+Train cost: 32.049758233, train label error rate: 0.551166590717
+Epoch 426/1000
+Train cost: 31.9622111003, train label error rate: 0.550484650665
+Epoch 451/1000
+Train cost: 31.87493799, train label error rate: 0.548293288549
+Epoch 476/1000
+Train cost: 31.7948865679, train label error rate: 0.546802022722
+('1000-------', 'pan bree it s fire no___', 'set green in i five again')
+Epoch 501/1000
+Train cost: 31.7250900269, train label error rate: 0.545483455393
+Epoch 526/1000
+Train cost: 31.6612134298, train label error rate: 0.544657703241
+Epoch 551/1000
+Train cost: 31.6010005103, train label error rate: 0.543997711605
+Epoch 576/1000
+Train cost: 31.5447016822, train label error rate: 0.542422777414
+('1000-------', 'pin wree it e fire no__', 'set green in i five again')
+Epoch 601/1000
+Train cost: 31.4921571943, train label error rate: 0.540466127131
+Epoch 626/1000
+Train cost: 31.4270456102, train label error rate: 0.540478675895
+Epoch 651/1000
+Train cost: 31.3667567359, train label error rate: 0.538633510802
+Epoch 676/1000
+Train cost: 94.02437795, train label error rate: 0.9186327974
+('1000-------', 'la _', 'set green in i five again')
+Epoch 701/1000
+Train cost: 89.1157784356, train label error rate: 0.898924105697
+Epoch 726/1000
+Train cost: 86.1576922947, train label error rate: 0.875472346942
+Epoch 751/1000
+Train cost: 81.4477262709, train label error rate: 0.82626607683
+Epoch 776/1000
+Train cost: 78.9326851739, train label error rate: 0.85035185549
+('1000-------', 'lai e e ___', 'set green in i five again')
+Epoch 801/1000
+Train cost: 78.6055460612, train label error rate: 0.849453009499
+Epoch 826/1000
+Train cost: 77.74147661, train label error rate: 0.848165182273
+Epoch 851/1000
+Train cost: 76.5742529975, train label error rate: 0.820570225186
+Epoch 876/1000
+Train cost: 75.5970113118, train label error rate: 0.78964458704
+('1000-------', 'lae enenen en ____', 'set green in i five again')
+Epoch 901/1000
+Train cost: 72.4464452108, train label error rate: 0.746553386582
+Epoch 926/1000
+Train cost: 70.5663772583, train label error rate: 0.756220083767
+Epoch 951/1000
+Train cost: 67.7668340895, train label error rate: 0.866083886888
+Epoch 976/1000
+Train cost: 62.8976635403, train label error rate: 0.7500049048
+('Training time: ', 10.660127878189087)

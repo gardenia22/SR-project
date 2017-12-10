@@ -8,10 +8,6 @@ import pickle
 import random
 
 
-# MODEL_PATH = "./RNN_model/"
-# MODEL_NAME = MODEL_PATH + "model"
-# RESULT_PATH = "./RNN_result/"
-
 # Data directories. TODO
 DATA_DIR = "./data/"
 
@@ -28,7 +24,7 @@ NUM_CLASSES = ord('z') - ord('a') + 1 + 1 + 1
 NUM_EPOCHS = 500
 NUM_HIDDEN = 50
 NUM_LAYERS = 1
-BATCH_SIZE = 1
+BATCH_SIZE = 20
 
 # Optimizer parameters.
 INITIAL_LEARNING_RATE = 1e-3
@@ -36,12 +32,6 @@ MOMENTUM = 0.8
 
 TEST_SIZE_RATIO = 0.1
 
-'''
-train 0...0.8
-val  0.8---0.9
-test 0.9...1
-
-'''
 
 def main(argv):
     # arguement option: mfcc and autoencoder 
@@ -76,14 +66,9 @@ def main(argv):
     test_inputs = np.float32(test_inputs) 
     test_sequence_lengths = get_sequence_length(test_inputs)
 
-    # validation_inputs = inputs[int(inputs.shape[0] * (1-2*TEST_SIZE_RATIO)):int(inputs.shape[0] * (1-TEST_SIZE_RATIO))]
-    # validation_inputs = np.float32(validation_inputs)
-    # validation_sequence_lengths = get_sequence_length(validation_inputs)
-        
-    # read texts 
+     # read texts 
     train_texts = texts[:int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
     test_texts = texts[int(texts.shape[0] * (1-TEST_SIZE_RATIO)):]
-    # validation_texts = texts[int(texts.shape[0] * (1-2*TEST_SIZE_RATIO)):int(texts.shape[0] * (1-TEST_SIZE_RATIO))]
 
 
     # read labels
@@ -93,7 +78,6 @@ def main(argv):
                                   space_token=SPACE_TOKEN)
     train_labels = labels[:int(labels.shape[0] * (1-TEST_SIZE_RATIO))]
     test_labels = labels[int(labels.shape[0] * (1-TEST_SIZE_RATIO)):] 
-    # validation_labels = labels[int(labels.shape[0] * (1-2*TEST_SIZE_RATIO)):int(labels.shape[0] * (1-TEST_SIZE_RATIO))] 
 
 
 
@@ -115,19 +99,7 @@ def main(argv):
 
         # 1d array of size [batch_size].
         sequence_length_placeholder = tf.placeholder(tf.int32, [None])
-        '''
-        # create a BasicRNNCell
-        rnn_cell = tf.nn.rnn_cell.BasicRNNCell(NUM_HIDDEN)
-
-        # defining initial state
-        initial_state = rnn_cell.zero_state(BATCH_SIZE, dtype=tf.float32)
- 
-        
-        # 'inpus_placeholder' is a tensor of shape [batch_size, max_time, cell_state_size]
-        # 'outputs' is a tensor of shape [batch_size, max_time, cell_state_size]
-        # 'state' is a tensor of shape [batch_size, cell_state_size]
-        outputs, state = tf.nn.dynamic_rnn(rnn_cell, inputs_placeholder, initial_state=initial_state, sequence_length=sequence_length_placeholder, dtype=tf.float32)
-        '''
+   
 
         # Defining the cell.
         cell = tf.contrib.rnn.LSTMCell(NUM_HIDDEN, state_is_tuple=True)
@@ -217,10 +189,7 @@ def main(argv):
                 feed = {inputs_placeholder: batch_train_inputs,
                         labels_placeholder: batch_train_targets,
                         sequence_length_placeholder: batch_train_sequence_lengths}
-                # print ("batch_train_inputs.shape", batch_train_inputs.shape)
-                # print ("labels_placeholder.shape", labels_placeholder.get_shape())
-                # print ("sequence_length_placeholder.shape", sequence_length_placeholder.shape)
-
+          
 
                 batch_cost, _ = session.run([cost, optimizer], feed)
                 train_cost += batch_cost * BATCH_SIZE
@@ -231,29 +200,19 @@ def main(argv):
             train_cost /= train_num
             train_label_error_rate /= train_num
 
-            # validation_feed = {inputs_placeholder: validation_inputs,
-            #                    labels_placeholder: validation_labels,
-            #                    sequence_length_placeholder: validation_sequence_lengths}
-
-            # validation_cost, validation_label_error_rate = session.run([cost, label_error_rate],
-            #                                                            feed_dict=validation_feed)
-
-            # validation_cost /= validation_num
-            # validation_label_error_rate /= validation_num
+    
 
 
-            if current_epoch % 50 == 0:
+            if current_epoch % 25 == 0:
+                print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
+                print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
+                
                 D = session.run(decoded[0], feed_dict=feed)
 
                 dense_D = tf.sparse_tensor_to_dense(D, default_value=-1).eval(session=session)
 
                 dt = sequence_decoder(dense_D[0])
-                print ("1000-------", dt, train_texts[0])
-
-            if current_epoch % 25 == 0:
-                print ("Epoch {}/{}".format(current_epoch + 1, NUM_EPOCHS))
-                print ("Train cost: {}, train label error rate: {}".format(train_cost, train_label_error_rate))
-                # print ("Validation cost: {}, validation label error rate: {}".format(validation_cost, validation_label_error_rate))
+                print ("decode training ----------", dt, train_texts[0])
 
             # Write logs at every iteration.
             train_cost_list.append([current_epoch, train_cost])
@@ -305,7 +264,7 @@ def main(argv):
                 decoded_text = sequence_decoder(sequence)
 
                 seq = "Sequence {}/{}\n".format(i + 1+ step*BATCH_SIZE, test_num)
-                org = "Original:\n{}\n".format(test_texts[step*BATCH_SIZE + i]) #......
+                org = "Original:\n{}\n".format(test_texts[step*BATCH_SIZE + i]) 
                 dec = "Decoded:\n{}\n".format(decoded_text)
                 print (seq)
                 print (org)

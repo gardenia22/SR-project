@@ -1,0 +1,150 @@
+Sequence 1/100
+Original:
+bin blue at f two now
+Decoded:
+pin wree it t five so
+Sequence 2/100
+Original:
+bin blue at f three soon
+Decoded:
+pin wree it b five so
+Sequence 3/100
+Original:
+bin blue at f four please
+Decoded:
+pin wree it t fire so
+Sequence 4/100
+Original:
+bin blue at f five again
+Decoded:
+pin wree it o fire ao
+Sequence 5/100
+Original:
+bin blue at l six now
+Decoded:
+pin wree it s fire so
+Sequence 6/100
+Original:
+bin blue at l seven soon
+Decoded:
+pin wree it t tire so
+Sequence 7/100
+Original:
+bin blue at l eight please
+Decoded:
+pin wree it e fire so
+Sequence 8/100
+Original:
+bin blue at l nine again
+Decoded:
+pin ree it b sire so
+Sequence 9/100
+Original:
+bin blue at s one soon
+Decoded:
+pin ree it b sire so
+Sequence 10/100
+Original:
+bin blue at s two please
+Decoded:
+pin gree it a sive so
+Sequence 11/100
+Original:
+bin blue at s three again
+Decoded:
+pin wree it b sire so
+Sequence 12/100
+Original:
+bin blue at s zero now
+Decoded:
+pin wree it i five se
+Sequence 13/100
+Original:
+bin blue at z four now
+Decoded:
+pin wree it e fire no
+Sequence 14/100
+Original:
+bin blue at z five soon
+Decoded:
+pin wree it b sire so
+Sequence 15/100
+Original:
+bin blue at z six please
+Decoded:
+pin gree it o fire so
+Sequence 16/100
+Original:
+bin blue at z seven again
+Decoded:
+pin wree it t fire so
+Sequence 17/100
+Original:
+bin blue by f six now
+Decoded:
+pin wree it i five no
+Sequence 18/100
+Original:
+bin blue by f seven soon
+Decoded:
+len bree iy a sire so
+Sequence 19/100
+Original:
+bin blue by f eight please
+Decoded:
+pin wree it t five se
+Sequence 20/100
+Original:
+bin blue by f nine again
+Decoded:
+pin wree it t fire so
+Sequence 21/100
+Original:
+bin blue by m one soon
+Decoded:
+pin wree it b five so
+Sequence 22/100
+Original:
+bin blue by m two please
+Decoded:
+pce gree in p ive aso
+Sequence 23/100
+Original:
+bin blue by m three again
+Decoded:
+pin wree in a sire so
+Sequence 24/100
+Original:
+bin blue by m zero now
+Decoded:
+pin wree it t fire no
+Sequence 25/100
+Original:
+bin blue by s four now
+Decoded:
+pay bree it t five so
+Sequence 26/100
+Original:
+bin blue by s five soon
+Decoded:
+let bree by i five ao
+Sequence 27/100
+Original:
+bin blue by s six please
+Decoded:
+pin wree it b sir please
+Sequence 28/100
+Original:
+bin blue by s seven again
+Decoded:
+pin wree it s fire so
+Sequence 29/100
+Original:
+bin blue by z eight now
+Decoded:
+pin bree it s fire so
+Sequence 30/100
+Original:
+bin blue by z nine soon
+Decoded:
+pin wree it t fire se

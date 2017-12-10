@@ -1,0 +1,52 @@
+('Running session ...BATCH_SIZE:', 20, 'NUM_EPOCHS:', 500, 'MOMENTUM:', 0.8)
+('1000-------', '', 'lay green at z six now')
+Epoch 1/500
+Train cost: 109.147294108, train label error rate: 1.0
+Epoch 26/500
+Train cost: 66.3404689365, train label error rate: 1.0
+('1000-------', ' e e ', 'lay green at z six now')
+Epoch 51/500
+Train cost: 53.3224222819, train label error rate: 0.809010510974
+Epoch 76/500
+Train cost: 45.428483412, train label error rate: 0.666961475213
+('1000-------', 'lay re it io __', 'lay green at z six now')
+Epoch 101/500
+Train cost: 41.5588680691, train label error rate: 0.657928829723
+Epoch 126/500
+Train cost: 38.3280615065, train label error rate: 0.626453105609
+('1000-------', 'lae wre it fio ', 'lay green at z six now')
+Epoch 151/500
+Train cost: 40.8595500522, train label error rate: 0.660702452395
+Epoch 176/500
+Train cost: 37.2940285577, train label error rate: 0.61438903941
+('1000-------', 'len gree it n tire _', 'lay green at z six now')
+Epoch 201/500
+Train cost: 35.8076949226, train label error rate: 0.598706567287
+Epoch 226/500
+Train cost: 34.9656605191, train label error rate: 0.590988862514
+('1000-------', 'bae rue it _', 'lay green at z six now')
+Epoch 251/500
+Train cost: 67.4363264296, train label error rate: 0.72467334138
+Epoch 276/500
+Train cost: 61.585737186, train label error rate: 0.713012684716
+('1000-------', 'say wree it a on___________', 'lay green at z six now')
+Epoch 301/500
+Train cost: 49.0280218336, train label error rate: 0.652125514878
+Epoch 326/500
+Train cost: 47.8798938327, train label error rate: 0.64200994836
+('1000-------', 'sey gree it e aon_____', 'lay green at z six now')
+Epoch 351/500
+Train cost: 43.4188279894, train label error rate: 0.61997086472
+Epoch 376/500
+Train cost: 39.4286684672, train label error rate: 0.606026944849
+('1000-------', 'scy gree wit ea a_________', 'lay green at z six now')
+Epoch 401/500
+Train cost: 53.1738933139, train label error rate: 0.669531699022
+Epoch 426/500
+Train cost: 42.842217848, train label error rate: 0.609259764353
+('1000-------', 'pce gree it sone naon___', 'lay green at z six now')
+Epoch 451/500
+Train cost: 36.1115668403, train label error rate: 0.593954237302
+Epoch 476/500
+Train cost: 40.4049485101, train label error rate: 0.60631935464
+('Training time: ', 11.180649995803833)
