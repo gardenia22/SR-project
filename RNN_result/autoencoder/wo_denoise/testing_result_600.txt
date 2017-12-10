@@ -2,149 +2,149 @@ Sequence 1/100
 Original:
 bin blue at f two now
 Decoded:
-pin gree it sone aoaon
+pin wree it t five so
 Sequence 2/100
 Original:
 bin blue at f three soon
 Decoded:
-pin gree it sone neon
+pin wree it b five so
 Sequence 3/100
 Original:
 bin blue at f four please
 Decoded:
-pin gree it sone aoaon
+pin wree it t fire so
 Sequence 4/100
 Original:
 bin blue at f five again
 Decoded:
-pin gree it soe loon
+pin wree it o fire ao
 Sequence 5/100
 Original:
 bin blue at l six now
 Decoded:
-pin gree it sone aoaon
+pin wree it s fire so
 Sequence 6/100
 Original:
 bin blue at l seven soon
 Decoded:
-pin gree it soe seon
+pin wree it t tire so
 Sequence 7/100
 Original:
 bin blue at l eight please
 Decoded:
-piy gree it soe soon
+pin wree it e fire so
 Sequence 8/100
 Original:
 bin blue at l nine again
 Decoded:
-pin gree it sone aoaon
+pin ree it b sire so
 Sequence 9/100
 Original:
 bin blue at s one soon
 Decoded:
-pin gree it so a 
+pin ree it b sire so
 Sequence 10/100
 Original:
 bin blue at s two please
 Decoded:
-pin gree it soe loaon
+pin gree it a sive so
 Sequence 11/100
 Original:
 bin blue at s three again
 Decoded:
-pin gree it sone aoaon
+pin wree it b sire so
 Sequence 12/100
 Original:
 bin blue at s zero now
 Decoded:
-pin gree it sone aoaon
+pin wree it i five se
 Sequence 13/100
 Original:
 bin blue at z four now
 Decoded:
-pin gree it sone seon
+pin wree it e fire no
 Sequence 14/100
 Original:
 bin blue at z five soon
 Decoded:
-pin gree it wone aeaon
+pin wree it b sire so
 Sequence 15/100
 Original:
 bin blue at z six please
 Decoded:
-pin gree it foe aoaon
+pin gree it o fire so
 Sequence 16/100
 Original:
 bin blue at z seven again
 Decoded:
-pin gree it sone anaon
+pin wree it t fire so
 Sequence 17/100
 Original:
 bin blue by f six now
 Decoded:
-pin gree it neon
+pin wree it i five no
 Sequence 18/100
 Original:
 bin blue by f seven soon
 Decoded:
-lan ree iy soe aoaon
+len bree iy a sire so
 Sequence 19/100
 Original:
 bin blue by f eight please
 Decoded:
-pin gree it soe loaon
+pin wree it t five se
 Sequence 20/100
 Original:
 bin blue by f nine again
 Decoded:
-pin gree it none aoaon
+pin wree it t fire so
 Sequence 21/100
 Original:
 bin blue by m one soon
 Decoded:
-pin gree it fine loaon
+pin wree it b five so
 Sequence 22/100
 Original:
 bin blue by m two please
 Decoded:
-pit ree iy soe aoaon
+pce gree in p ive aso
 Sequence 23/100
 Original:
 bin blue by m three again
 Decoded:
-piy gree iy sone aoaon
+pin wree in a sire so
 Sequence 24/100
 Original:
 bin blue by m zero now
 Decoded:
-pin wree it soe aoaon
+pin wree it t fire no
 Sequence 25/100
 Original:
 bin blue by s four now
 Decoded:
-pay gree it soa
+pay bree it t five so
 Sequence 26/100
 Original:
 bin blue by s five soon
 Decoded:
-laen gree bt soe aoaon
+let bree by i five ao
 Sequence 27/100
 Original:
 bin blue by s six please
 Decoded:
-pin gree it sine aoaon
+pin wree it b sir please
 Sequence 28/100
 Original:
 bin blue by s seven again
 Decoded:
-pin gree it so aoaon
+pin wree it s fire so
 Sequence 29/100
 Original:
 bin blue by z eight now
 Decoded:
-pin gree it sone aoaon
+pin bree it s fire so
 Sequence 30/100
 Original:
 bin blue by z nine soon
 Decoded:
-pin gree it soe aoon
+pin wree it t fire se
